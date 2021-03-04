@@ -1,2 +1,0 @@
-# GoStyle
-Application de couponing
