@@ -13,7 +13,7 @@ myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["codes"]
 
 app = Flask(__name__)
-api = Api(app=app, version='1.0', title='Qrcodes Api', description='Simple api', validate=True)
+api = Api(app=app, version='1.0', title='Qrcodes API', description='API de l\'application GoStyle', url='test', validate=True)
 
 @api.route("/api/codes")
 
