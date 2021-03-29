@@ -108,20 +108,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
     }
-
-    private void testAPI(){
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                try {
-                    System.out.println(CodeUtils.getCode("YOTTA CODE"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }).start();
-    }
 }

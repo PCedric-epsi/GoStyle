@@ -4,20 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.epsi.gostyle.rest.CodeUtils;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -52,22 +48,7 @@ public class ScanActivity extends AppCompatActivity {
         btnAction = findViewById(R.id.btnAction);
 
         //Lors d'un clique
-        btnAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (intentData.length() > 0) {
-                    if (isEmail)
-                        //startActivity(new Intent(ScanActivity.this, EmailActivity.class).putExtra("email_address", intentData));
-                        System.out.println("ok");
-                    else {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentData)));
-                    }
-                }
-
-
-            }
-        });
+        onClickScanning();
     }
 
     //Utilisation de la caméra pour detecter le QR code
@@ -76,7 +57,7 @@ public class ScanActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
 
         barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.ALL_FORMATS)
+                .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
@@ -123,29 +104,22 @@ public class ScanActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
 
-
                     txtBarcodeValue.post(new Runnable() {
 
                         //Résultat du code scanné
                         @Override
                         public void run() {
 
-                            if (barcodes.valueAt(0).email != null) {
-                                txtBarcodeValue.removeCallbacks(null);
-                                intentData = barcodes.valueAt(0).email.address;
-                                txtBarcodeValue.setText(intentData);
-                                isEmail = true;
-                                btnAction.setText("ADD CONTENT TO THE MAIL");
-                            } else {
-                                isEmail = false;
-                                btnAction.setText("LAUNCH URL");
-                                intentData = barcodes.valueAt(0).displayValue;
-                                txtBarcodeValue.setText(intentData);
-
+                            if(barcodes.valueAt(0).email != null) {
+                                btnAction.setText("QR CODE NOT VALID");
+                                barcodes.delete(0);
+                                return;
                             }
+                            btnAction.setText("GET CODE");
+                            intentData = barcodes.valueAt(0).displayValue;
+                            txtBarcodeValue.setText(intentData);
                         }
                     });
-
                 }
             }
         });
@@ -163,4 +137,27 @@ public class ScanActivity extends AppCompatActivity {
         initialiseDetectorsAndSources();
     }
 
+    public void onClickScanning(){
+
+        if (intentData.length() > 0) {
+            checkCode(intentData);
+        }
+    }
+
+    private void checkCode(String code){
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    System.out.println(CodeUtils.getCode(code));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+    }
 }
