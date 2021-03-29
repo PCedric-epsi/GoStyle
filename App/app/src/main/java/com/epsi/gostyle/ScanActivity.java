@@ -45,12 +45,13 @@ public class ScanActivity extends AppCompatActivity {
         initViews();
     }
 
+    //Items de l'Activity
     private void initViews() {
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnAction = findViewById(R.id.btnAction);
 
-
+        //Lors d'un clique
         btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +70,7 @@ public class ScanActivity extends AppCompatActivity {
         });
     }
 
+    //Utilisation de la caméra pour detecter le QR code
     private void initialiseDetectorsAndSources() {
 
         Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
@@ -124,6 +126,7 @@ public class ScanActivity extends AppCompatActivity {
 
                     txtBarcodeValue.post(new Runnable() {
 
+                        //Résultat du code scanné
                         @Override
                         public void run() {
 

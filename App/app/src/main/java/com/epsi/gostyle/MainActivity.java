@@ -29,35 +29,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Items de l'Activity
         btScan = findViewById(R.id.btScan);
         btCode = findViewById(R.id.btCode);
+
         requestCamera();
     }
 
+    //Demande d'accès à la caméra
     private void requestCamera(){
-        System.out.println("TESTE" + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA));
+        //System.out.println("TESTE" + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA));
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-            System.out.println("test");
+            //System.out.println("test");
             startCamera();
         } else {
-            System.out.println("TEST" + Manifest.permission.CAMERA);
+            //System.out.println("TEST" + Manifest.permission.CAMERA);
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
             } else {
-                System.out.println("TEST" + PERMISSION_REQUEST_CAMERA);
+                //System.out.println("TEST" + PERMISSION_REQUEST_CAMERA);
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
             }
         }
     }
 
+    //Résultat de la réponse utilisateur
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
-        System.out.println(grantResults.length + " ------- " + grantResults[0]);
+        //System.out.println(grantResults.length + " ------- " + grantResults[0]);
         if (requestCode == PERMISSION_REQUEST_CAMERA) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera();
             } else {
-                System.out.println("test");
+                //System.out.println("test");
                 Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
         }
@@ -103,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
     private void newScan() {
         Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
-        //finish();
     }
 
     private void testAPI(){
