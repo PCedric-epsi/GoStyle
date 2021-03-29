@@ -9,15 +9,18 @@ import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.epsi.gostyle.bean.CodeBean;
 import com.epsi.gostyle.rest.CodeUtils;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -31,7 +34,9 @@ public class ScanActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     private Button btnAction;
     private String intentData = "";
-    private boolean isEmail = false;
+    private String dataReq = "";
+    private Toast currentToast;
+    private String data = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +51,6 @@ public class ScanActivity extends AppCompatActivity {
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnAction = findViewById(R.id.btnAction);
-
-        //Lors d'un clique
-        onClickScanning();
     }
 
     //Utilisation de la caméra pour detecter le QR code
@@ -106,18 +108,32 @@ public class ScanActivity extends AppCompatActivity {
 
                     txtBarcodeValue.post(new Runnable() {
 
-                        //Résultat du code scanné
                         @Override
                         public void run() {
 
-                            if(barcodes.valueAt(0).email != null) {
-                                btnAction.setText("QR CODE NOT VALID");
-                                barcodes.delete(0);
-                                return;
-                            }
-                            btnAction.setText("GET CODE");
                             intentData = barcodes.valueAt(0).displayValue;
-                            txtBarcodeValue.setText(intentData);
+                            System.out.println("test2" + intentData);
+
+                            if(intentData.startsWith("GoStyle_")) {
+
+                                btnAction.setClickable(true);
+                                btnAction.setText("GET THE CODE");
+                                data = intentData.split("GoStyle_")[1];
+                            }
+
+                            else {
+                                dataReq = "";
+                                btnAction.setClickable(false);
+                                btnAction.setText("ANALYZING QR CODE");
+
+                                if(currentToast == null) {
+                                    currentToast = Toast.makeText(getApplicationContext(), "This QR CODE isn't a GoStyle code", Toast.LENGTH_SHORT);
+                                }
+
+                                currentToast.setText("This QR CODE isn't a GoStyle code");
+                                currentToast.setDuration(Toast.LENGTH_SHORT);
+                                currentToast.show();
+                            }
                         }
                     });
                 }
@@ -137,10 +153,11 @@ public class ScanActivity extends AppCompatActivity {
         initialiseDetectorsAndSources();
     }
 
-    public void onClickScanning(){
+    public void onClickScanning(View view){
 
         if (intentData.length() > 0) {
-            checkCode(intentData);
+
+            checkCode(data);
         }
     }
 
@@ -152,12 +169,40 @@ public class ScanActivity extends AppCompatActivity {
             public void run() {
 
                 try {
-                    System.out.println(CodeUtils.getCode(code));
+
+                    CodeBean currentCode = CodeUtils.getCode(code);
+
+                    if(!CodeActivity.isExist(data)){
+
+                        CodeActivity.codeBeanList.add(new CodeBean(data, currentCode.getValue()));
+                        showToast("Qr Code saved");
+                    } else {
+
+                        showToast("This Qr Code is already saved");
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
         }).start();
+    }
+
+    private void showToast(String message) {
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if(currentToast == null) {
+                    currentToast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+                }
+
+                currentToast.setText(message);
+                currentToast.setDuration(Toast.LENGTH_SHORT);
+                currentToast.show();
+            }
+        });
     }
 }
