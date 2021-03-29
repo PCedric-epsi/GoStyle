@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+
 public class CodeUtils {
 
     //private static String BASE_URL = "http://10.0.2.2:8887/api/codes"; //For emulator
@@ -15,7 +17,13 @@ public class CodeUtils {
         return new Gson().fromJson(response, List.class);
     }
 
-    public static CodeBean getCode(String code) throws Exception {
+    /*public static CodeBean getCode(String code) throws Exception {
+
+        String response = OkhttpUtils.findCodeByName(BASE_URL + "/", code);
+        return new Gson().fromJson(response, CodeBean.class);
+    }*/
+
+    public static CodeBean getCode(String code) throws Exception{
 
         String response = OkhttpUtils.findCodeByName(BASE_URL + "/", code);
         return new Gson().fromJson(response, CodeBean.class);
