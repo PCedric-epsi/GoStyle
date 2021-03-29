@@ -22,7 +22,7 @@ class QrCodeList(Resource):
     @api.doc(responses={200: 'Ok'})
     def get(self):
         """
-        returns list of codes
+        Returns list of codes
         """
 
         cursor = mydb.qrcodes.find({}, {"_id": 0})
@@ -38,7 +38,7 @@ class Qrcode(Resource):
 
     def get(self, name):
         """
-        returns value of code if exist
+        Returns value of code if exist
         """
         cursor = mydb.qrcodes.find({"name": name}, {"_id": 0, "value": 1})
 
