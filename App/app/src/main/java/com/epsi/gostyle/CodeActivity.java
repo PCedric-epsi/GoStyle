@@ -21,16 +21,16 @@ public class CodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code);
 
-        //Items de l'Activity
         listView = (ListView)findViewById(R.id.ltCode);
-
-        //Utilisation d'une liste pour l'adapter à l'item de l'Activity
         ArrayAdapter<CodeBean> arrayAdapter = new ArrayAdapter<CodeBean>(this, android.R.layout.simple_list_item_1 , codeBeanList);
-
-        //Ajout de l'adaptation dans l'item
         listView.setAdapter(arrayAdapter);
     }
 
+    /**
+     *
+     * @param code -> code from last (approved) QR CODE detected
+     * @return true if code already exists in list
+     */
     public static boolean isExist(String code){
 
         return codeBeanList.stream().anyMatch(codeBean -> codeBean.getName().equals(code));
