@@ -17,12 +17,6 @@ public class CodeUtils {
         return new Gson().fromJson(response, List.class);
     }
 
-    /*public static CodeBean getCode(String code) throws Exception {
-
-        String response = OkhttpUtils.findCodeByName(BASE_URL + "/", code);
-        return new Gson().fromJson(response, CodeBean.class);
-    }*/
-
     public static CodeBean getCode(String code) throws Exception{
 
         String response = OkhttpUtils.findCodeByName(BASE_URL + "/", code);

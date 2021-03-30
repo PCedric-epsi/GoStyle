@@ -24,16 +24,6 @@ public class OkhttpUtils {
         return response.body().string();
     }
 
-    /*public static String findCodeByName(String url, String code) throws Exception {
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder().url(url + code).build();
-        Response response = client.newCall(request).execute();
-
-        return response.body().string();
-    }*/
-
     public static String findCodeByName(String url, String code) throws Exception{
 
         URL url_ = new URL(url + code);

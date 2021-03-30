@@ -99,9 +99,8 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
-                    // vérification des permissions
+                    // check permissions
                     if (ActivityCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        // allume la caméra
                         cameraSource.start(surfaceView.getHolder());
                     } else {
                         ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
@@ -213,7 +212,7 @@ public class ScanActivity extends AppCompatActivity {
 
 
     /**
-     * @param code -> read code from last (approved) QR CODE detected
+     * @param code -> code from last (approved) QR CODE detected
      */
     private void checkCode(String code){
 
