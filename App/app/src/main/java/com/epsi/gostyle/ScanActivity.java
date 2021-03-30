@@ -26,7 +26,6 @@ import java.io.IOException;
 
 public class ScanActivity extends AppCompatActivity {
 
-
     private SurfaceView surfaceView;
     private TextView txtBarcodeValue;
     private BarcodeDetector barcodeDetector;
@@ -46,61 +45,106 @@ public class ScanActivity extends AppCompatActivity {
         initViews();
     }
 
-    //Items de l'Activity
+    /**
+     * @param view -> unused (due to not having multiple buttons)
+     * Process actions on click
+     */
+    public void onClickScanning(View view){
+
+        if (intentData.length() > 0) {
+            checkCode(data);
+        }
+    }
+
+    /**
+     * Init Activity items
+     */
     private void initViews() {
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnAction = findViewById(R.id.btnAction);
     }
 
-    //Utilisation de la caméra pour detecter le QR code
+    /**
+     * Use Camera to detect QR CODES
+     */
     private void initialiseDetectorsAndSources() {
 
         Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
 
+        /**
+         * Instantiate a barcode detector, with its parameters
+         */
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
 
+        /**
+         *  Instantiate the camera, with its parameters
+         */
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(1920, 1080)
-                .setAutoFocusEnabled(true) //you should add this feature
+                .setAutoFocusEnabled(true)
                 .build();
 
+        /**
+         * Receive information about changes that occur in the surface
+         */
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+
+            /**
+             * @param holder
+             * called when surface is created
+             */
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
+                    // vérification des permissions
                     if (ActivityCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        // allume la caméra
                         cameraSource.start(surfaceView.getHolder());
                     } else {
-                        ActivityCompat.requestPermissions(ScanActivity.this, new
-                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
 
+            /**
+             * @param holder -> current surface in use
+             * @param format -> surface format
+             * @param width -> surface width
+             * @param height -> surface height
+             *
+             * called when surface is changed
+             */
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             }
 
+            /**
+             * @param holder -> current surface in use (right before destruction)
+             * Turn of camera when preview stops (to save resources)
+             */
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                cameraSource.stop();
-            }
+            public void surfaceDestroyed(SurfaceHolder holder) { cameraSource.stop(); }
         });
 
-
+        /**
+         * Starts barcode detector
+         */
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
                 Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
             }
 
+            /**
+             * @param detections -> list of all detected QR CODES
+             * get all detected QR CODES
+             */
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
@@ -108,14 +152,26 @@ public class ScanActivity extends AppCompatActivity {
 
                     txtBarcodeValue.post(new Runnable() {
 
+                        /**
+                         * Executes when a QR CODE is found
+                         */
                         @Override
                         public void run() {
 
+                            /**
+                             * get the first QR CODE of the list, (@index: 0) being the last one detected
+                             */
+                            try{
+                                System.out.println(barcodes.valueAt(10).displayValue);
+                            }
+                         catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                             intentData = barcodes.valueAt(0).displayValue;
-                            System.out.println("test2" + intentData);
 
+                            // vérification du qrcode détecté
                             if(intentData.startsWith("GoStyle_")) {
-
                                 btnAction.setClickable(true);
                                 btnAction.setText("GET THE CODE");
                                 data = intentData.split("GoStyle_")[1];
@@ -126,13 +182,7 @@ public class ScanActivity extends AppCompatActivity {
                                 btnAction.setClickable(false);
                                 btnAction.setText("ANALYZING QR CODE");
 
-                                if(currentToast == null) {
-                                    currentToast = Toast.makeText(getApplicationContext(), "This QR CODE isn't a GoStyle code", Toast.LENGTH_SHORT);
-                                }
-
-                                currentToast.setText("This QR CODE isn't a GoStyle code");
-                                currentToast.setDuration(Toast.LENGTH_SHORT);
-                                currentToast.show();
+                                showToast("This QR CODE isn't a GoStyle code");
                             }
                         }
                     });
@@ -141,26 +191,30 @@ public class ScanActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * When activity is paused
+     */
     @Override
     protected void onPause() {
         super.onPause();
+        System.out.println("test");
         cameraSource.release();
     }
 
+    /**
+     * when activity is resumed
+     */
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("test2");
         initialiseDetectorsAndSources();
     }
 
-    public void onClickScanning(View view){
 
-        if (intentData.length() > 0) {
-
-            checkCode(data);
-        }
-    }
-
+    /**
+     * @param code -> read code from last (approved) QR CODE detected
+     */
     private void checkCode(String code){
 
         new Thread(new Runnable() {
@@ -169,16 +223,13 @@ public class ScanActivity extends AppCompatActivity {
             public void run() {
 
                 try {
-
                     CodeBean currentCode = CodeUtils.getCode(code);
 
                     if(!CodeActivity.isExist(data)){
-
                         CodeActivity.codeBeanList.add(new CodeBean(data, currentCode.getValue()));
-                        showToast("Qr Code saved");
+                        showToast("QR CODE saved");
                     } else {
-
-                        showToast("This Qr Code is already saved");
+                        showToast("This QR CODE is already saved");
                     }
 
                 } catch (Exception e) {
@@ -189,6 +240,10 @@ public class ScanActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * update current Toast to refresh it and not having to wait for each Toast to print
+     * @param message -> message to print in the Toast
+     */
     private void showToast(String message) {
 
         runOnUiThread(new Runnable() {
