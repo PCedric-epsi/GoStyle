@@ -36,38 +36,34 @@ public class MainActivity extends AppCompatActivity {
         requestCamera();
     }
 
-    //Demande d'accès à la caméra
+    /**
+     * request camera access
+     */
     private void requestCamera(){
-        //System.out.println("TESTE" + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA));
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-            //System.out.println("test");
             startCamera();
         } else {
-            //System.out.println("TEST" + Manifest.permission.CAMERA);
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
             } else {
-                //System.out.println("TEST" + PERMISSION_REQUEST_CAMERA);
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
             }
         }
     }
 
-    //Résultat de la réponse utilisateur
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     * get user permission response results
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
-        //System.out.println(grantResults.length + " ------- " + grantResults[0]);
         if (requestCode == PERMISSION_REQUEST_CAMERA) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera();
-            } else {
-                //System.out.println("test");
+            if (!(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void startCamera(){
     }
 
     public void onClickScan(View view){
@@ -85,7 +81,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    /* Handles item selections */
+    /**
+     * @param item
+     * @return
+     * handles item selection
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -99,11 +99,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * launch new activity
+     */
     private void newCode() {
         Intent intent = new Intent(this, CodeActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * launch new activity
+     */
     private void newScan() {
         Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
