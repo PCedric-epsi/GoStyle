@@ -158,14 +158,8 @@ public class ScanActivity extends AppCompatActivity {
                         public void run() {
 
                             /**
-                             * get the first QR CODE of the list, (@index: 0) being the last one detected
+                             * get the first QR CODE of the list
                              */
-                            try{
-                                System.out.println(barcodes.valueAt(10).displayValue);
-                            }
-                         catch (Exception e) {
-                            e.printStackTrace();
-                        }
 
                             intentData = barcodes.valueAt(0).displayValue;
 
@@ -196,7 +190,6 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("test");
         cameraSource.release();
     }
 
@@ -206,7 +199,6 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("test2");
         initialiseDetectorsAndSources();
     }
 
