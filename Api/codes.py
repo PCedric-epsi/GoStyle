@@ -6,11 +6,11 @@ from flask import Flask
 from flask_restplus import Api, Resource
 
 
-'''myclient = pymongo.MongoClient("mongodb+srv://admin:toor@mspr.mn5kl.mongodb.net/dbcodes?retryWrites=true&w=majority")
-mydb = myclient["dbcodes"]'''
+myclient = pymongo.MongoClient("mongodb+srv://admin:toor@mspr.mn5kl.mongodb.net/dbcodes?retryWrites=true&w=majority")
+mydb = myclient["dbcodes"]
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["codes"]
+'''myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["codes"]'''
 
 app = Flask(__name__)
 api = Api(app=app, version='1.0', title='Qrcodes API', description='API de l\'application GoStyle', url='test', validate=True)
@@ -47,4 +47,4 @@ class Qrcode(Resource):
         else: 
             return cursor.next()
 
-app.run(port=8887, host='localhost')
+app.run(port=8000, host='localhost')
