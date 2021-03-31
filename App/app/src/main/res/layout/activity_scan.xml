@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btnAction"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true" />
+        android:layout_height="wrap_content"
+        android:layout_weight="2"/>
 
     <TextView
         android:id="@+id/txtBarcodeValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:text="No Barcode Detected"
         android:textColor="@android:color/white"
         android:textSize="20sp"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
-    <Button
-        android:id="@+id/btnAction"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="ANALYZING QR CODE"
-        android:clickable="false"
-        android:onClick="onClickScanning"/>
+        android:orientation="horizontal"
+        android:background="@color/grey">
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/btnAction"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/orange"
+            android:clickable="false"
+            android:onClick="onClickScanning"
+            app:cornerRadius="50dp"
+            android:padding="15dp"
+            android:text="ANALYZING QR CODE" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:background="@mipmap/background">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -17,6 +18,8 @@
         android:gravity="center"
         android:text="GoStyle"
         android:textSize="50dp"
+        android:fontFamily="@font/ink_free"
+        android:textColor="@color/orange"
         android:textStyle="bold"
         app:autoSizeTextType="none" />
 
@@ -33,15 +36,23 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="Scanner"
-            android:onClick="onClickScan"/>
+            android:textColor="@color/orange"
+            android:onClick="onClickScan"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/orange"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
         <Button
             android:id="@+id/btCode"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="75dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            android:onClick="onClickCode"
             android:text="Mes codes"
-            android:onClick="onClickCode"/>
+            android:textColor="@color/orange"
+            app:strokeColor="@color/orange"
+            app:strokeWidth="2dp" />
     </LinearLayout>
 </LinearLayout>
