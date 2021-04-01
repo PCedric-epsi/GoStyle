@@ -1,7 +1,4 @@
-import json
-
 import pymongo
-from bson import json_util, ObjectId
 from flask import Flask
 from flask_restplus import Api, Resource
 
@@ -13,7 +10,7 @@ mydb = myclient["dbcodes"]
 mydb = myclient["codes"]'''
 
 app = Flask(__name__)
-api = Api(app=app, version='1.0', title='Qrcodes API', description='API de l\'application GoStyle', url='test', validate=True)
+api = Api(app=app, version='1.0', title='Qrcodes API', description='API de l\'application GoStyle', validate=True)
 
 @api.route("/api/codes")
 
@@ -33,17 +30,17 @@ class QrCodeList(Resource):
 
         return data
 
-@api.route("/api/codes/<string:name>")
+@api.route("/api/codes/<string:code>")
 class Qrcode(Resource):
 
-    def get(self, name):
+    def get(self, code):
         """
         Returns value of code if exist
         """
-        cursor = mydb.qrcodes.find({"name": name}, {"_id": 0, "value": 1})
+        cursor = mydb.qrcodes.find({"name": code}, {"_id": 0, "value": 1})
 
         if cursor.count() == 0:
-            return {'message': 'No code found'}
+            return {'message': 'No code found'}, 404
         else: 
             return cursor.next()
 
